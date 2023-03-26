@@ -12,7 +12,9 @@ from progress.bar import IncrementalBar
 catalog = {}
 category = {}
 subcatalog = {}
-slovar = []
+right_catalog = ['Овощи и фрукты', 'Молоко, яйца и сыр', 'Сладости и десерты', 'Макароны, крупы и мука', 'Хлеб, выпечка и тесто', 'Диетические продукты', 'Мясо и птица', 'Колбасы и деликатесы', 'Готовая еда', 'Продукция быстрого приготовления', 'Замороженные продукты', 'Рыба и морепродукты', 'Масла и соусы', 
+'Приправы и сухие смеси', 'Чай, кофе и какао', 'Напитки', 'Консервация', 'Снеки', 'Детское питание и гигиена', 'Для дома', 'Красота и здоровье']
+dictionary = []
 
 cookies = {
     'tmr_lvid': '1e13183d26e1a3265735f6fd98e20a61',
@@ -60,7 +62,6 @@ def get_catalog():
             success = True
         except requests.exceptions.ReadTimeout:
             print('Повторный запрос на сайт Ярче')
-
     # response = requests.get('https://yarcheplus.ru/category', cookies=cookies, headers=headers)
 
     if f'Каталог{now.date()}' not in os.listdir(os.getcwd()):
@@ -83,15 +84,15 @@ def get_catalog():
         name = name_catalog.find('a', class_='aex-F4ydD bex-F4ydD').get('href')
         # print(re.search('category', name))
         # print(name)        
-        
         if(re.search('category', name)):
-            category.update({name_catalog.text: 'https://yarcheplus.ru' + name})
+            if name_catalog.text in right_catalog:
+                category.update({name_catalog.text: 'https://yarcheplus.ru' + name})
         else:
-            catalog.update({name_catalog.text: []})
-            catalog[name_catalog.text].append('https://yarcheplus.ru' + name)
+            if name_catalog.text in right_catalog:
+                catalog.update({name_catalog.text: []})
+                catalog[name_catalog.text].append('https://yarcheplus.ru' + name)
         bar.next()
     bar.finish()
-         
 
     bar = IncrementalBar('Каталоги', max = len(catalog))
     os.chdir(os.getcwd() + f'\\Каталог{now.date()}')
